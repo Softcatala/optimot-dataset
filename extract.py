@@ -1,8 +1,14 @@
 import os
 import re
-import yaml
+import json
 
-import re
+SOURCE = "Optimot, Departament de Política Lingüística, Generalitat de Catalunya"
+SOURCE_URL_TEMPLATE = (
+    "https://aplicacions.llengua.gencat.cat/llc/AppJava/index.html"
+    "?action=Principal&method=detall&input_cercar=&numPagina=1"
+    "&database=FITXES_PUB&idFont={source_id}"
+)
+DOWNLOAD_DATE = "2026-07-08"
 
 def extract_info_from_text(text):
     fitxa_match = re.search(r"Fitxa\s+(\d+/\d+)", text)
@@ -17,26 +23,45 @@ def extract_info_from_text(text):
         "Resposta": resposta_match.group(1).strip() if resposta_match else ""
     }
 
+def source_id_from_filename(filename):
+    match = re.fullmatch(r"page_(\d+)\.txt", filename)
+    return match.group(1) if match else ""
+
+def add_provenance(info, filename):
+    source_id = source_id_from_filename(filename)
+    return {
+        **info,
+        "source": SOURCE,
+        "source_id": source_id,
+        "source_url": SOURCE_URL_TEMPLATE.format(source_id=source_id) if source_id else "",
+        "download_date": DOWNLOAD_DATE,
+    }
+
 def process_directory(directory):
     all_entries = []
-    for filename in os.listdir(directory):
+    seen_entries = set()
+    for filename in sorted(os.listdir(directory), key=lambda name: int(source_id_from_filename(name) or 0)):
         if filename.endswith(".txt"):
             filepath = os.path.join(directory, filename)
             with open(filepath, 'r', encoding='utf-8') as f:
                 text = f.read()
                 info = extract_info_from_text(text)
-                all_entries.append(info)
+                entry_key = tuple(info.items())
+                if entry_key in seen_entries:
+                    continue
+                seen_entries.add(entry_key)
+                all_entries.append(add_provenance(info, filename))
     return all_entries
 
 # Main process
 directory = "downloaded_pages"
-output_file = "optimot.yml"
+output_file = "optimot.jsonl"
 
 data = process_directory(directory)
 
-# Write to YAML
+# Write to JSON Lines
 with open(output_file, 'w', encoding='utf-8') as f:
-    yaml.dump(data, f, allow_unicode=True, sort_keys=False)
+    for entry in data:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
-print(f"YAML file written to {output_file} with {len(data)} entries.")
-
+print(f"JSONL file written to {output_file} with {len(data)} entries.")
