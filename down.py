@@ -8,7 +8,15 @@ OUTPUT_DIR = "downloaded_pages"
 MAX_ID = 65535
 DELAY = 0.5  # seconds
 
-from bs4 import BeautifulSoup
+
+def replace_breaks_preserving_children(soup):
+    for br in soup.find_all("br"):
+        if list(br.children):
+            br.insert_before("\n")
+            br.unwrap()
+        else:
+            br.replace_with("\n")
+
 
 def extract_fitxa_text(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -32,9 +40,8 @@ def extract_fitxa_text(html):
     # Pre-process line breaks and paragraph tags
     soup = BeautifulSoup(full_html, 'html.parser')
 
-    # Replace <br> with newline
-    for br in soup.find_all(['br']):
-        br.replace_with('\n')
+    # Replace <br> with newline without losing children from malformed HTML.
+    replace_breaks_preserving_children(soup)
 
     # Add newlines after paragraphs and headings
     for tag in soup.find_all(['p', 'h3', 'h4', 'div']):
@@ -90,4 +97,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
