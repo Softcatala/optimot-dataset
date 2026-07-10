@@ -10,7 +10,7 @@ Each entry addresses a common question about the **Catalan language**, offering 
 
 **Fields:** `Fitxa`, `Darrera versió`, `Títol`, `Resposta`, `source`, `source_id`, `source_url`, `download_date`.
 
-**License:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Reusers must cite the source, indicate the last update date, and must not distort or misrepresent the information.
+**License:** See [https://huggingface.co/datasets/softcatala/optimot-linguistic-data](https://huggingface.co/datasets/softcatala/optimot-linguistic-data). Reusers must cite the source, indicate the last update date, and must not distort or misrepresent the information.
 
 **Source citation:** Optimot, Departament de Política Lingüística, Generalitat de Catalunya.
 
