@@ -8,7 +8,7 @@ Each entry addresses a common question about the **Catalan language**, offering 
 
 **Date:** 2026/7/8 (dataset download date; each entry includes its source update date in `Darrera versió`)
 
-**Fields:** `Fitxa`, `Darrera versió`, `Títol`, `Resposta`, `source`, `source_id`, `source_url`, `download_date`.
+**Fields:** `Fitxa`, `Darrera versió`, `Títol`, `Categoria`, `Resposta`, `source`, `source_id`, `source_url`, `download_date`.
 
 **License:** See [https://huggingface.co/datasets/softcatala/optimot-linguistic-data](https://huggingface.co/datasets/softcatala/optimot-linguistic-data). Reusers must cite the source, indicate the last update date, and must not distort or misrepresent the information.
 
